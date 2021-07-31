@@ -1,0 +1,8 @@
+/grpc-service/target/
+/http-to-grpc/target/
+/project/project/
+/project/target/
+/target/
+/.bsp/
+/.idea/
+/kubernetes/
