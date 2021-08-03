@@ -1,16 +1,15 @@
 package institute.besna.solver
 
-import scala.concurrent.duration._
-import scala.concurrent.{ExecutionContext, Future}
-import scala.util.Failure
-import scala.util.Success
-import akka.Done
-import akka.NotUsed
+import akka.{Done, NotUsed}
 import akka.actor.typed.ActorSystem
 import akka.actor.typed.scaladsl.Behaviors
 import akka.grpc.GrpcClientSettings
 import akka.stream.scaladsl.Source
 import org.slf4j.Logger
+
+import scala.concurrent.duration._
+import scala.concurrent.{ExecutionContext, Future}
+import scala.util.{Failure, Success}
 
 object SolverClient {
 

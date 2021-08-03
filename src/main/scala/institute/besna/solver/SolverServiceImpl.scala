@@ -1,15 +1,12 @@
 package institute.besna.solver
 
-import scala.concurrent.{ExecutionContext, Future}
 import akka.NotUsed
 import akka.actor.typed.ActorSystem
-import akka.stream.scaladsl.BroadcastHub
-import akka.stream.scaladsl.Keep
-import akka.stream.scaladsl.MergeHub
-import akka.stream.scaladsl.Sink
-import akka.stream.scaladsl.Source
+import akka.stream.scaladsl.{BroadcastHub, Keep, MergeHub, Sink, Source}
 import institute.besna.solver.SolverResponse.Response.Reply
 import org.slf4j.Logger
+
+import scala.concurrent.{ExecutionContext, Future}
 
 final class SolverServiceImpl(system: ActorSystem[_]) extends SolverService {
   private implicit val sys: ActorSystem[_] = system
