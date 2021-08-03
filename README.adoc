@@ -1,0 +1,9 @@
+= Scala template =
+:awestruct-layout: base
+:showtitle:
+:prev_section: defining-frontmatter
+:next_section: creating-pages
+:homepage: https://www.besna.institute
+:author: 株式会社BESNA研究所
+:email: sakamoto.github@besna.institute
+

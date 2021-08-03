@@ -1,58 +1,29 @@
-name := "akka-grpc-kubernetes"
+name := "Scala template"
+
+version := "1.0"
+
 scalaVersion := "2.13.6"
 
-lazy val akkaVersion = "2.6.14"
-lazy val discoveryVersion = "1.1.1"
-lazy val akkaHttpVersion = "10.2.4"
+lazy val akkaVersion = "2.6.15"
+lazy val akkaHttpVersion = "10.2.5"
+lazy val akkaGrpcVersion = "2.0.0"
 
-lazy val root = (project in file("."))
-  .aggregate(httpToGrpc, grpcService)
+enablePlugins(AkkaGrpcPlugin, DockerPlugin, JavaAppPackaging)
 
-// Http front end that calls out to a gRPC back end
-lazy val httpToGrpc = (project in file("http-to-grpc"))
-  .enablePlugins(AkkaGrpcPlugin, DockerPlugin, JavaAppPackaging)
-  .settings(
-    scalaVersion := "2.13.6"
-  )
-  .settings(
-    libraryDependencies ++= Seq(
-      "com.typesafe.akka" %% "akka-actor-typed" % akkaVersion,
-      "com.typesafe.akka" %% "akka-slf4j" % akkaVersion,
-      "com.typesafe.akka" %% "akka-discovery" % akkaVersion,
-      "com.typesafe.akka" %% "akka-stream" % akkaVersion,
+libraryDependencies ++= Seq(
 
-      "com.typesafe.akka" %% "akka-parsing" % akkaHttpVersion,
-      "com.typesafe.akka" %% "akka-http-core" % akkaHttpVersion,
-      "com.typesafe.akka" %% "akka-http" % akkaHttpVersion,
-      "com.typesafe.akka" %% "akka-http-spray-json" % akkaHttpVersion,
-      "com.typesafe.akka" %% "akka-http2-support" % akkaHttpVersion,
+  "com.typesafe.akka" %% "akka-actor-typed" % akkaVersion,
+  "com.typesafe.akka" %% "akka-stream" % akkaVersion,
+  "com.typesafe.akka" %% "akka-discovery" % akkaVersion,
+  "com.typesafe.akka" %% "akka-pki" % akkaVersion,
 
-      "com.lightbend.akka.discovery" %% "akka-discovery-kubernetes-api" % discoveryVersion,
+  // The Akka HTTP overwrites are required because Akka-gRPC depends on 10.1.x
+  "com.typesafe.akka" %% "akka-http" % akkaHttpVersion,
+  "com.typesafe.akka" %% "akka-http2-support" % akkaHttpVersion,
 
-      "ch.qos.logback" % "logback-classic" % "1.2.3"
-    ),
-    dockerExposedPorts := Seq(8080)
-  )
+  "ch.qos.logback" % "logback-classic" % "1.2.5",
 
-lazy val grpcService = (project in file("grpc-service"))
-  .enablePlugins(AkkaGrpcPlugin, DockerPlugin, JavaAppPackaging)
-  .settings(
-    scalaVersion := "2.13.6"
-  )
-  .settings(
-    dockerExposedPorts := Seq(8080),
-    libraryDependencies ++= Seq(
-      "com.typesafe.akka" %% "akka-actor" % akkaVersion,
-      "com.typesafe.akka" %% "akka-actor-typed" % akkaVersion,
-      "com.typesafe.akka" %% "akka-slf4j" % akkaVersion,
-      "com.typesafe.akka" %% "akka-stream" % akkaVersion,
-      "com.typesafe.akka" %% "akka-discovery" % akkaVersion,
-
-      "com.typesafe.akka" %% "akka-http" % akkaHttpVersion,
-      "com.typesafe.akka" %% "akka-http2-support" % akkaHttpVersion,
-
-      "ch.qos.logback" % "logback-classic" % "1.2.3"
-    )
-  )
-
-
+  "com.typesafe.akka" %% "akka-actor-testkit-typed" % akkaVersion % Test,
+  "com.typesafe.akka" %% "akka-stream-testkit" % akkaVersion % Test,
+  "org.scalatest" %% "scalatest" % "3.2.9" % Test
+)
