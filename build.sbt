@@ -29,7 +29,7 @@ lazy val httpToGrpc = (project in file("http-to-grpc"))
 
       "com.lightbend.akka.discovery" %% "akka-discovery-kubernetes-api" % discoveryVersion,
 
-      "ch.qos.logback" % "logback-classic" % "1.2.3"
+      "ch.qos.logback" % "logback-classic" % "1.2.5"
     ),
     dockerExposedPorts := Seq(8080)
   )
@@ -47,11 +47,16 @@ lazy val grpcService = (project in file("grpc-service"))
       "com.typesafe.akka" %% "akka-slf4j" % akkaVersion,
       "com.typesafe.akka" %% "akka-stream" % akkaVersion,
       "com.typesafe.akka" %% "akka-discovery" % akkaVersion,
+      "com.typesafe.akka" %% "akka-pki" % akkaVersion,
 
       "com.typesafe.akka" %% "akka-http" % akkaHttpVersion,
       "com.typesafe.akka" %% "akka-http2-support" % akkaHttpVersion,
 
-      "ch.qos.logback" % "logback-classic" % "1.2.3"
+      "ch.qos.logback" % "logback-classic" % "1.2.5",
+
+      "com.typesafe.akka" %% "akka-actor-testkit-typed" % akkaVersion % Test,
+      "com.typesafe.akka" %% "akka-stream-testkit" % akkaVersion % Test,
+      "org.scalatest" %% "scalatest" % "3.1.1" % Test
     )
   )
 

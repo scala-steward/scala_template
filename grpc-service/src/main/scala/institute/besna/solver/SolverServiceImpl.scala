@@ -1,15 +1,18 @@
 package institute.besna.solver
 
 import akka.NotUsed
-import akka.event.LoggingAdapter
-import akka.stream.Materializer
+import akka.actor.typed.ActorSystem
 import akka.stream.scaladsl.{BroadcastHub, Keep, MergeHub, Sink, Source}
 import institute.besna.solver.SolverResponse.Response.Reply
+import org.slf4j.Logger
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
-final class SolverServiceImpl(materializer: Materializer, log: LoggingAdapter) extends SolverService {
-  private implicit val mat: Materializer = materializer
+final class SolverServiceImpl(system: ActorSystem[_]) extends SolverService {
+  private implicit val sys: ActorSystem[_] = system
+  private implicit val ec: ExecutionContext = system.executionContext
+  private val log: Logger = system.log
+
   private val (inboundHub: Sink[SolverRequest, NotUsed], outboundHub: Source[SolverResponse, NotUsed]) =
     MergeHub.source[SolverRequest]
       .mapAsync(2)(analyze)
@@ -33,7 +36,6 @@ final class SolverServiceImpl(materializer: Materializer, log: LoggingAdapter) e
 
   override def analyzeOnClientStreamingRPC(in: Source[SolverRequest, NotUsed]): Future[SolverResponse] = {
     log.info("analyzeThroughClientStreamingRPC")
-    import materializer.executionContext
     in.runWith(Sink.seq)
       .map(elements =>
         SolverResponse(Reply(SolverReply(elements.map(_.name).mkString)))
