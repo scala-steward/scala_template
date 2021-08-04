@@ -25,7 +25,7 @@ object SolverServer {
       .parseString("akka.http.server.preview.enable-http2 = on")
       .withFallback(ConfigFactory.defaultApplication())
     val system = ActorSystem[Nothing](Behaviors.empty, "SolverServer", conf)
-    new SolverServer(system).run(); {}
+    new SolverServer(system).run()
   }
 
 }
