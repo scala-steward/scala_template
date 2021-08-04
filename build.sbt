@@ -36,6 +36,7 @@ lazy val root = (project in file("."))
   .settings(wartremoverSettings: _*)
   .enablePlugins(AkkaGrpcPlugin, DockerPlugin, JavaAppPackaging)
   .settings(
+    dockerExposedPorts := Seq(8080),
     libraryDependencies ++= Seq(
       "com.typesafe.akka" %% "akka-actor-typed" % akkaVersion,
       "com.typesafe.akka" %% "akka-stream" % akkaVersion,
