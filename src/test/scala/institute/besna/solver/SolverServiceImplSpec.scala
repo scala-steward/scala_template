@@ -3,7 +3,6 @@ package institute.besna.solver
 import akka.{Done, NotUsed}
 import akka.actor.testkit.typed.scaladsl.ActorTestKit
 import akka.actor.typed.ActorSystem
-import akka.stream.Materializer
 import akka.stream.scaladsl.{Sink, Source}
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.concurrent.ScalaFutures
@@ -16,13 +15,20 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.concurrent.duration._
 import scala.util.{Failure, Success}
 
+@SuppressWarnings(
+  Array[String](
+    "org.wartremover.warts.Any",
+    "org.wartremover.warts.MutableDataStructures",
+    "org.wartremover.warts.NonUnitStatements"
+  )
+)
 final class SolverServiceImplSpec extends AnyWordSpec with BeforeAndAfterAll with should.Matchers with ScalaFutures {
 
-  private val testKit: ActorTestKit = ActorTestKit()
-  private implicit val patience: PatienceConfig = PatienceConfig(scaled(5.seconds), scaled(100.millis))
-  private implicit val system: ActorSystem[_] = testKit.system
-  private val log: Logger = system.log
-  private implicit val ec: ExecutionContext = system.executionContext
+  private val testKit:           ActorTestKit     = ActorTestKit()
+  private implicit val patience: PatienceConfig   = PatienceConfig(scaled(5.seconds), scaled(100.millis))
+  private implicit val system:   ActorSystem[_]   = testKit.system
+  private val log:               Logger           = system.log
+  private implicit val ec:       ExecutionContext = system.executionContext
   private val service = new SolverServiceImpl(system)
   override def afterAll(): Unit = testKit.shutdownTestKit()
 
@@ -36,28 +42,29 @@ final class SolverServiceImplSpec extends AnyWordSpec with BeforeAndAfterAll wit
     }
   }
 
-  private def unaryResponse(response: Future[SolverResponse])
-                           (implicit ec: ExecutionContext): Future[String] =
+  private def unaryResponse(response: Future[SolverResponse]): Future[String] =
     response
       .map(responseToString)
       .recover { case t: Throwable => log.error(t.getMessage); "" }
 
-  private def streamingResponse(response: Source[SolverResponse, NotUsed])
-                               (implicit mat: Materializer, ec: ExecutionContext): Future[String] = {
-    response.runWith(Sink.seq[SolverResponse])
+  private def streamingResponse(
+      response: Source[SolverResponse, NotUsed]
+  ): Future[String] = {
+    response
+      .runWith(Sink.seq[SolverResponse])
       .map(_.map(responseToString).mkString("-"))
       .recover { case t: Throwable => log.error(t.getMessage); "" }
   }
 
-  private val apiName = "APINAME"
-  private val name = "Bob"
-  private val unaryRequest = SolverRequest(apiName=apiName, name=name)
+  private val apiName      = "APINAME"
+  private val name         = "Bob"
+  private val unaryRequest = SolverRequest(apiName = apiName, name = name)
   private val streamingRequest: Source[SolverRequest, NotUsed] =
-    Source(name.codePoints
-      .toArray
-      .toList
-      .map(codePoint => new String(Array[Int](codePoint), 0, 1))
-      .map(codePointStr => SolverRequest(apiName=apiName, name=codePointStr)))
+    Source(
+      name.codePoints.toArray.toList
+        .map(codePoint => new String(Array[Int](codePoint), 0, 1))
+        .map(codePointStr => SolverRequest(apiName = apiName, name = codePointStr))
+    )
 
   "SolverServiceImpl" should {
     "reply to single request on unary RPC" in {
@@ -81,10 +88,11 @@ final class SolverServiceImplSpec extends AnyWordSpec with BeforeAndAfterAll wit
       val correctResponses = mutable.Queue[String]("Hello, B", "Hello, o", "Hello, b")
       val done: Future[Done] = response.runForeach { r =>
         val element: String = correctResponses.dequeue()
-        log.info(r.response.reply.get.text)
+        log.info(r.response.reply.map(_.text).getOrElse(""))
         log.info(element)
-        if (r.response.reply.get.text != element) {
-          log.info("FAIL: {} {}", r.response.reply.get.text, element)
+        import cats.implicits._
+        if (r.response.reply.map(_.text).getOrElse("") =!= element) {
+          log.info("FAIL: {} {}", r.response.reply.map(_.text).getOrElse(""), element)
           throw new Exception("FAILURE")
         }
       }

@@ -2,3 +2,4 @@ loglevel
 materializer
 besna
 PKCS
+scalafmt
