@@ -7,3 +7,73 @@
 :author: 株式会社BESNA研究所
 :email: sakamoto.github@besna.institute
 
+社内システムのモジュールは，gRPC over SSL/TLSを介してリクエストを受け付け応答するコンテナである．
+コンテナ開発で選択されるプログラミング言語は，Scala, Rust, Python, Julia等，目的に応じて処理系やライブラリ等の都合で選択されるが，
+本リポジトリは，Scalaによるコンテナ開発のためのテンプレートである．
+
+== 現状 ==
+bidirectional streaming RPCだけはテストコードがうまくいっていないが，実際には通信できている．
+Scala 3への移行は，様々なライブラリの対応が確認できてから行う予定である．
+
+== コード品質 ==
+Scalaのコード品質を確保するためにsbtプラグインの `WartRemover` とscalacのオプション `-deprecation` ， `-feature` ， `-unchecked` ， `-Xlint` を使用する．
+`Scalafmt` を用いて， link:.scalafmt.conf[.scalafmt.conf] で規定したフォーマットにコンパイル時に自動変換する．
+コーディング慣習や語彙表を社内でドキュメント化し，共有して，これらに従っている．
+使用ライブラリのバージョン更新のためにGitHubに導入されているDependabotがScala非対応なので， `Scala Steward` を導入している．
+Akka Actorsは，Classic Actorsを使用せずTyped Actorsを使用する．
+
+== IntelliJ IDEAの設定 ==
+統合開発環境IntelliJ IDEAで開発するかは任意だが，この設定について説明する．
+
+=== IntelliJ IDEAのインストール ===
+https://www.jetbrains.com/ja-jp/idea/download/[ダウンロードページ] からダウンロードする等してインストールすること．
+なお，IntelliJ IDEAにはCommunity EditionとUltimate Editionがありますが，モジュール開発に関してはどちらでも問題ない．
+
+=== プロジェクトの作成 ===
+`git clone` してダウンロードしたファイルを，IntelliJ IDEAでProject from Existing Sourcesからsbtプロジェクトとして読み込む．
+
+=== フォーマッターの設定 ===
+https://pleiades.io/help/idea/work-with-scala-formatter.html[このScalafmtフォーマッターについてのページ] を参考にし，設定する．
+
+=== スペルチェッカーの設定 ===
+IntelliJ IDEAのエディターではスペル誤りの可能性がある文字列に緑色の下線が引かれる．
+この機能によりタイポなどが直せるので便利ではあるが，誤りではないが緑色の下線が引かれてしまう問題も発生する．
+そのため，文字列を辞書 link:vocabulary.dic[vocabulary.dic] に登録し，これを用いて登録語に下線が引かれないように設定する．
+Ctrl+Alt+S (Windows) / ⌘ (macOS)等でSettingsを開いて，Editor->Natural Languages->Spellingを選択し，Custom dictionaries (plain text word lists)の+ボタンを押して， vocabulary.dicを追加し，Applyボタンを押してからSettingsを閉じる．
+この設定によりスペルチェッカーに登録語が引っ掛からなくなる．
+
+== sbtのコマンド ==
+プログラムの実行方法はいろいろとあるが，著者はsbt shellが便利なのでそこから実行することが多い．sbt shellに投げるコマンドについて，使用するものの一部を次にまとめる．
+
+=== コンパイル ===
+`compile`
+もしくは
+`Compile / compile`
+
+コンパイル時に link:src/main/protobuf/solver.proto[solver.proto] からScalaコードが `target/scala-2.13/classes/` 以下に自動生成される．
+
+=== 実行 ===
+```
+runMain institute.besna.solver.SolverServer
+``` 
+```
+runMain institute.besna.solver.SolverClient
+```
+
+=== テストコードのコンパイル ===
+`Test / compile`
+
+=== テストコードの実行 ===
+`test`
+もしくは
+`Test / test`
+
+=== Dockerコンテナの起動 ===
+`Docker / publishLocal` を実行すると `target/docker/` の下にアセンブルされたjarファイルとDockerfileが自動生成され，コンテナが起動する．
+
+== トラブルシューティング ==
+ポートが開いたままで使用中のため再実行できない場合（sbt shellを停止/再起動しても影響しない）の対応方法について説明する．
+netstatを用いて，開いているポートをどのPIDが使用しているのか調べ，そのPIDをkillする．
+`sudo apt install -y net-tools` 等でnetstatをインストールする．
+`./kill_by_port.sh (ポート番号)` を実行すると引数で与えたポートを使用しているPIDをkillする．
+引数を与えない場合はポート番号8080を使用しているPIDをkillする．
