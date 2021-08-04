@@ -75,5 +75,5 @@ runMain institute.besna.solver.SolverClient
 ポートが開いたままで使用中のため再実行できない場合（sbt shellを停止/再起動しても影響しない）の対応方法について説明する．
 netstatを用いて，開いているポートをどのPIDが使用しているのか調べ，そのPIDをkillする．
 `sudo apt install -y net-tools` 等でnetstatをインストールする．
-`./kill_by_port.sh` を実行すると引数で与えたポートを使用しているPIDをkillする．
+`./kill_by_port.sh (ポート番号)` を実行すると引数で与えたポートを使用しているPIDをkillする．
 引数を与えない場合はポート番号8080を使用しているPIDをkillする．
