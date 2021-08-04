@@ -50,7 +50,7 @@ Ctrl+Alt+S (Windows) / ⌘ (macOS)等でSettingsを開いて，Editor->Natural L
 もしくは
 `Compile / compile`
 
-コンパイル時に link:src/main/resources/solver.proto[solver.proto] からScalaコードが `target/scala-2.13/classes/` 以下に自動生成される．
+コンパイル時に link:src/main/protobuf/solver.proto[solver.proto] からScalaコードが `target/scala-2.13/classes/` 以下に自動生成される．
 
 === 実行 ===
 ```
