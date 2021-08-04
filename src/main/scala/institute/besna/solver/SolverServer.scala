@@ -14,13 +14,15 @@ import java.security.cert.{Certificate, CertificateFactory}
 import javax.net.ssl.{KeyManagerFactory, SSLContext}
 import scala.concurrent.{ExecutionContext, Future}
 import scala.concurrent.duration._
-import scala.io.Source
+import scala.io.{Codec, Source}
 import scala.util.{Failure, Success}
 
 object SolverServer {
 
+  @SuppressWarnings(Array[String]("org.wartremover.warts.Nothing", "org.wartremover.warts.NonUnitStatements"))
   def main(args: Array[String]): Unit = {
-    val conf = ConfigFactory.parseString("akka.http.server.preview.enable-http2 = on")
+    val conf = ConfigFactory
+      .parseString("akka.http.server.preview.enable-http2 = on")
       .withFallback(ConfigFactory.defaultApplication())
     val system = ActorSystem[Nothing](Behaviors.empty, "SolverServer", conf)
     new SolverServer(system).run()
@@ -31,9 +33,9 @@ object SolverServer {
 final class SolverServer(system: ActorSystem[_]) {
 
   def run(): Future[Http.ServerBinding] = {
-    implicit val sys: ActorSystem[_] = system
-    implicit val ec: ExecutionContext = system.executionContext
-    val log: Logger = sys.log
+    implicit val sys: ActorSystem[_]   = system
+    implicit val ec:  ExecutionContext = system.executionContext
+    val log:          Logger           = sys.log
 
     val service: HttpRequest => Future[HttpResponse] = SolverServiceHandler(new SolverServiceImpl(system))
 
@@ -55,11 +57,12 @@ final class SolverServer(system: ActorSystem[_]) {
     bound
   }
 
+  @SuppressWarnings(Array[String]("org.wartremover.warts.Null"))
   private def serverHttpContext: HttpsConnectionContext = {
     val privateKey = DERPrivateKeyLoader.load(PEMDecoder.decode(readPrivateKeyPem()))
-    val fact = CertificateFactory.getInstance("X.509")
-    val cer = fact.generateCertificate(classOf[SolverServer].getResourceAsStream("/certs/server1.pem"))
-    val ks = KeyStore.getInstance("PKCS12")
+    val fact       = CertificateFactory.getInstance("X.509")
+    val cer        = fact.generateCertificate(classOf[SolverServer].getResourceAsStream("/certs/server1.pem"))
+    val ks         = KeyStore.getInstance("PKCS12")
     ks.load(null)
     ks.setKeyEntry("private", privateKey, new Array[Char](0), Array[Certificate](cer))
     val keyManagerFactory = KeyManagerFactory.getInstance("SunX509")
@@ -69,6 +72,6 @@ final class SolverServer(system: ActorSystem[_]) {
     ConnectionContext.httpsServer(context)
   }
 
-  private def readPrivateKeyPem(): String = Source.fromResource("certs/server1.key").mkString
+  private def readPrivateKeyPem(): String = Source.fromResource("certs/server1.key")(Codec.UTF8).mkString
 
 }

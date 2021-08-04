@@ -9,12 +9,13 @@ import org.slf4j.Logger
 import scala.concurrent.{ExecutionContext, Future}
 
 final class SolverServiceImpl(system: ActorSystem[_]) extends SolverService {
-  private implicit val sys: ActorSystem[_] = system
-  private implicit val ec: ExecutionContext = system.executionContext
-  private val log: Logger = system.log
+  private implicit val sys: ActorSystem[_]   = system
+  private implicit val ec:  ExecutionContext = system.executionContext
+  private val log:          Logger           = system.log
 
   private val (inboundHub: Sink[SolverRequest, NotUsed], outboundHub: Source[SolverResponse, NotUsed]) = {
-    MergeHub.source[SolverRequest]
+    MergeHub
+      .source[SolverRequest]
       .mapAsync(2)(analyze)
       .toMat(BroadcastHub.sink[SolverResponse])(Keep.both)
       .run()
@@ -24,7 +25,7 @@ final class SolverServiceImpl(system: ActorSystem[_]) extends SolverService {
       .run()*/
   }
 
-  private val apiName = "APINAME"
+  private val apiName    = "APINAME"
   private val apiVersion = "1.0.0"
 
   private def analyze$(request: SolverRequest): SolverResponse = {
@@ -51,10 +52,15 @@ final class SolverServiceImpl(system: ActorSystem[_]) extends SolverService {
   override def analyzeOnClientStreamingRPC(in: Source[SolverRequest, NotUsed]): Future[SolverResponse] = {
     log.info("analyzeOnClientStreamingRPC")
     in.runWith(Sink.seq)
-      .map(elements => SolverResponse(Reply(SolverReply(apiName, apiVersion, elements.map(_.name.concat("+")).mkString))))
+      .map(elements =>
+        SolverResponse(Reply(SolverReply(apiName, apiVersion, elements.map(_.name.concat("+")).mkString)))
+      )
   }
 
-  override def analyzeOnBidirectionalStreamingRPC(in: Source[SolverRequest, NotUsed]): Source[SolverResponse, NotUsed] = {
+  @SuppressWarnings(Array[String]("org.wartremover.warts.NonUnitStatements"))
+  override def analyzeOnBidirectionalStreamingRPC(
+      in: Source[SolverRequest, NotUsed]
+  ): Source[SolverResponse, NotUsed] = {
     log.info("analyzeOnBidirectionalStreamingRPC")
     in.runWith(inboundHub)
     outboundHub
