@@ -6,6 +6,14 @@ Linux / maintainer := "Kotaro Sakamoto <sakamoto.github@besna.institute>"
 
 scalaVersion := "2.13.6"
 
+scalacOptions ++= Seq(
+  "-deprecation",
+  "-encoding", "UTF-8", // yes, this is 2 args
+  "-feature",
+  "-unchecked",
+  "-Xlint"
+)
+
 Compile / doc / sources := Seq.empty
 Test / doc / sources := Seq.empty
 

@@ -3,3 +3,4 @@ materializer
 besna
 PKCS
 scalafmt
+Xlint
