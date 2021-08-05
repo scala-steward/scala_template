@@ -27,7 +27,7 @@ Akka Actorsは，Classic Actorsを使用せずTyped Actorsを使用する．
 
 === IntelliJ IDEAのインストール ===
 https://www.jetbrains.com/ja-jp/idea/download/[ダウンロードページ] からダウンロードする等してインストールすること．
-なお，IntelliJ IDEAにはCommunity EditionとUltimate Editionがありますが，モジュール開発に関してはどちらでも問題ない．
+なお，IntelliJ IDEAにはCommunity EditionとUltimate Editionがあるが，モジュール開発に関してはどちらでも問題ない．
 
 === プロジェクトの作成 ===
 `git clone` してダウンロードしたファイルを，IntelliJ IDEAでProject from Existing Sourcesからsbtプロジェクトとして読み込む．
