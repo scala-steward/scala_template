@@ -18,7 +18,7 @@ Compile / doc / sources := Seq.empty
 Test / doc / sources := Seq.empty
 
 lazy val akkaVersion = "2.6.15"
-lazy val akkaHttpVersion = "10.2.5"
+lazy val akkaHttpVersion = "10.2.6"
 
 lazy val scalafmtSettings = Seq(
   scalafmtOnCompile := true,
