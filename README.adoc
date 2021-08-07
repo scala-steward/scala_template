@@ -6,6 +6,13 @@
 :homepage: https://www.besna.institute
 :author: 株式会社BESNA研究所
 :email: sakamoto.github@besna.institute
+:scala_steward:
+:scala_steward_url: https://scala-steward.org
+:scala_steward_image: https://img.shields.io/badge/Scala_Steward-helping-blue.svg?style=flat&logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAQCAMAAAARSr4IAAAAVFBMVEUAAACHjojlOy5NWlrKzcYRKjGFjIbp293YycuLa3pYY2LSqql4f3pCUFTgSjNodYRmcXUsPD/NTTbjRS+2jomhgnzNc223cGvZS0HaSD0XLjbaSjElhIr+AAAAAXRSTlMAQObYZgAAAHlJREFUCNdNyosOwyAIhWHAQS1Vt7a77/3fcxxdmv0xwmckutAR1nkm4ggbyEcg/wWmlGLDAA3oL50xi6fk5ffZ3E2E3QfZDCcCN2YtbEWZt+Drc6u6rlqv7Uk0LdKqqr5rk2UCRXOk0vmQKGfc94nOJyQjouF9H/wCc9gECEYfONoAAAAASUVORK5CYII=
+
+ifdef::scala_steward[]
+image:{scala_steward_image}[Scala Steward badge,link={scala_steward_url}]
+endif::[]
 
 社内システムのモジュールは，gRPC over SSL/TLSを介してリクエストを受け付け応答するコンテナである．
 コンテナ開発で選択されるプログラミング言語は，Scala, Rust, Python, Julia等，目的に応じて処理系やライブラリ等の都合で選択されるが，
