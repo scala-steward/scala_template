@@ -8,7 +8,8 @@ scalaVersion := "2.13.6"
 
 scalacOptions ++= Seq(
   "-deprecation",
-  "-encoding", "UTF-8", // yes, this is 2 args
+  "-encoding",
+  "UTF-8", // yes, this is 2 args
   "-feature",
   "-unchecked",
   "-Xlint"
@@ -17,7 +18,7 @@ scalacOptions ++= Seq(
 Compile / doc / sources := Seq.empty
 Test / doc / sources := Seq.empty
 
-lazy val akkaVersion = "2.6.15"
+lazy val akkaVersion     = "2.6.15"
 lazy val akkaHttpVersion = "10.2.6"
 
 lazy val scalafmtSettings = Seq(
@@ -46,10 +47,8 @@ lazy val root = (project in file("."))
       // The Akka HTTP overwrites are required because Akka-gRPC depends on 10.1.x
       "com.typesafe.akka" %% "akka-http" % akkaHttpVersion,
       "com.typesafe.akka" %% "akka-http2-support" % akkaHttpVersion,
-
       "org.typelevel" %% "cats-core" % "2.6.1",
       "ch.qos.logback" % "logback-classic" % "1.2.5",
-
       "com.typesafe.akka" %% "akka-actor-testkit-typed" % akkaVersion % Test,
       "com.typesafe.akka" %% "akka-stream-testkit" % akkaVersion % Test,
       "org.scalatest" %% "scalatest" % "3.2.9" % Test
