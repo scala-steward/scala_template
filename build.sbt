@@ -48,7 +48,7 @@ lazy val root = (project in file("."))
       "com.typesafe.akka" %% "akka-http" % akkaHttpVersion,
       "com.typesafe.akka" %% "akka-http2-support" % akkaHttpVersion,
       "org.typelevel" %% "cats-core" % "2.6.1",
-      "ch.qos.logback" % "logback-classic" % "1.2.5",
+      "ch.qos.logback" % "logback-classic" % "1.2.6",
       "com.typesafe.akka" %% "akka-actor-testkit-typed" % akkaVersion % Test,
       "com.typesafe.akka" %% "akka-stream-testkit" % akkaVersion % Test,
       "org.scalatest" %% "scalatest" % "3.2.9" % Test
